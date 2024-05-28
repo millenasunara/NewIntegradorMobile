@@ -1,28 +1,65 @@
-import {useState} from 'react'
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Image} from 'react-native'
-import {useNavigation} from '@react-navigation/native'
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 export const Login = () => { 
-  
-    const [usuario, setUsuario] = useState('')
-    const [senha, setSenha] = useState('')
+    const [usuario, setUsuario] = useState('');
+    const [senha, setSenha] = useState('');
+    const navigation = useNavigation();
+    const [token, setToken] = useState('');
 
-    const navigation = useNavigation()
+    useEffect(() => {
+        // Função para obter o token
+        const obterToken = async () => {
+            try {
+                
+                const response = await axios.post('http://10.0.2.2:8000/api/token', {
+                    username: "joaozin_do_grau",
+                    password: 123
+                }); 
+                const token = response.data.access;
+                console.log(token)
+                setToken(token);
+            } catch (error) {
+                console.error('Erro ao obter token:', error);
+            }
+        };
 
-    function abrirInicial(){
-        navigation.navigate('rotasTab')
+        // Chamar a função para obter o token
+        obterToken();
+    }, []);
+
+    function fazerLogin() {
+        // Verificar se o token está disponível
+        if (!token) {
+            console.error('Token não disponível');
+            return;
+        }
+
+        // Fazer a requisição de login usando o token no header
+        axios.post('http://10.0.2.2:8000/api/create_user', { usuario, senha }, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            // Se o login for bem-sucedido, navegar para a tela inicial
+            navigation.navigate('rotasTab');
+        })
+        .catch(error => {
+            // Se houver um erro no login, você pode exibir uma mensagem de erro
+            console.error('Erro de login:', error);
+        });
     }
 
     return(
-        <View style={estilos.conteiner}>
-           
+        <View style={estilos.container}>
             <Image 
                 style={estilos.logo}
                 source={require('../../assets/logo.png')}
             />
-
-
-           <TextInput
+            <TextInput
                 style={estilos.campo}
                 placeholder='Usuário' 
                 placeholderTextColor='#e1e5f2'
@@ -33,28 +70,25 @@ export const Login = () => {
                 style={estilos.campo}
                 placeholder='Senha'
                 placeholderTextColor='#e1e5f2'
-                keyboardType='default'
+                secureTextEntry={true}
                 onChangeText={setSenha}
                 value={senha}      
             />    
-
             <TouchableOpacity 
                 style={estilos.botao} 
-                onPress={abrirInicial}
+                onPress={fazerLogin}
             >
                 <Text style={estilos.textoBotao}>Entrar</Text>
             </TouchableOpacity>                  
-
             <TouchableOpacity style={estilos.cadastro} >
                 <Text style={estilos.textoCadastro}>Cadastre-se</Text>
             </TouchableOpacity>  
-            
         </View>
-    )
+    );
 }
 
 const estilos = StyleSheet.create({
-    conteiner: {
+    container: {
         flex: 1,
         backgroundColor: '#000',
         justifyContent: 'center',
@@ -97,4 +131,4 @@ const estilos = StyleSheet.create({
         marginBottom: 50,
         marginTop: -155
     }
-})
+});
