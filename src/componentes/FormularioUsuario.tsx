@@ -1,84 +1,90 @@
-import { useState } from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import { Feather } from '@expo/vector-icons'
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
-interface FormularioUsuarioProps {
-    adicionar: (nome: string, 
-                email: string, 
-                telefone: string, 
-                usuario: string, 
-                senha: string) => void
-}
+export const FormularioUsuario: React.FC = () => {
+    const [usuario, setUsuario] = useState('');
+    const [senha, setSenha] = useState('');
+    const [token, setToken] = useState('');
+    const navigation = useNavigation();
 
-export const FormularioUsuario = ({adicionar}: FormularioUsuarioProps) => { 
+    useEffect(() => {
+        // Função para obter o token de autenticação
+        const fetchToken = async () => {
+            try {
+                const response = await axios.post('http://10.0.2.2:8000/api/token', {
+                    username: "joaozin_do_grau",
+                    password: 123
+                }); 
+                const token = response.data.access;
+                console.log(token)
+                setToken(token);
+            } catch (error) {
+                console.error('Erro ao obter token:', error);
+            }
+        };
 
-    const [nome, setNome] = useState('')
-    const [email, setEmail] = useState('')
-    const [telefone, setTelefone] = useState('')
-    const [usuario, setUsuario] = useState('')
-    const [senha, setSenha] = useState('')
+        // Chama a função para obter o token quando o componente é montado
+        fetchToken();
+    }, []);
 
-    return(
+    const fazerCadastro = async () => {
+        try {
+            // Verificar se o token está disponível
+            if (!token) {
+                console.error('Token não disponível');
+                return;
+            }
+
+            // Fazer a requisição de cadastro usando o token no header
+            const response = await axios.post('http://10.0.2.2:8000/api/create_user', 
+                {
+                    username: usuario,
+                    password: senha
+                }, 
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+
+            // Se o cadastro for bem-sucedido, navegar para a tela inicial
+            navigation.navigate('rotasTab');
+        } catch (error) {
+            // Se houver um erro no cadastro, você pode exibir uma mensagem de erro
+            console.error('Erro de cadastro:', error);
+        }
+    };
+
+    return (
         <View style={estilos.conteiner}>
-
             <View style={estilos.conteinerCampos}>
                 <TextInput
                     style={estilos.campo}
-                    placeholder='Nome' 
-                    placeholderTextColor='#01233c'
-                    keyboardType='default'
-                    onChangeText={setNome}
-                    value={nome}
-                />
-                <TextInput 
-                    style={estilos.campo}
-                    placeholder='Email'
-                    placeholderTextColor='#01233c'
-                    keyboardType='email-address'
-                    onChangeText={setEmail}
-                    value={email}      
-                />
-                <TextInput 
-                    style={estilos.campo}
-                    placeholder='Telefone'
-                    placeholderTextColor='#01233c'
-                    keyboardType='phone-pad'                
-                    onChangeText={setTelefone}
-                    value={telefone}
-                />
-                <TextInput 
-                    style={estilos.campo}
-                    placeholder='Usuário'
-                    placeholderTextColor='#01233c'
-                    keyboardType='default'                
+                    placeholder="Usuário"
+                    placeholderTextColor="#01233c"
+                    keyboardType="default"
                     onChangeText={setUsuario}
                     value={usuario}
-                />      
-                <TextInput 
+                />
+                <TextInput
                     style={estilos.campo}
-                    placeholder='Senha'
-                    placeholderTextColor='#01233c'
-                    keyboardType='phone-pad'                
+                    placeholder="Senha"
+                    placeholderTextColor="#01233c"
+                    secureTextEntry={true}
                     onChangeText={setSenha}
                     value={senha}
-                />                          
+                />
             </View>
-
-            <TouchableOpacity 
-                style={estilos.botao}
-                onPress={ () => adicionar(nome, email, telefone, usuario, senha) }
-            >
-                <Text>
-                    <Feather 
-                        name="user-plus" 
-                        size={24} 
-                        color='#dee2e6' 
-                    />  
-                </Text>
+            <TouchableOpacity style={estilos.botao} onPress={fazerCadastro}>
+                <Feather name="user-plus" size={24} color="#dee2e6" />
             </TouchableOpacity>
         </View>
-    )
-}
+    );
+};
 
 const estilos = StyleSheet.create({
     conteiner: {
@@ -110,4 +116,4 @@ const estilos = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
     },
-  });
+});

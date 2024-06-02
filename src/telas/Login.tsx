@@ -30,28 +30,35 @@ export const Login = () => {
         obterToken();
     }, []);
 
-    function fazerLogin() {
-        // Verificar se o token está disponível
-        if (!token) {
-            console.error('Token não disponível');
-            return;
-        }
+function fazerLogin() {
+    // Verificar se o token está disponível
+    if (!token) {
+        console.error('Token não disponível');
+        return;
+    }
 
-        // Fazer a requisição de login usando o token no header
-        axios.post('http://10.0.2.2:8000/api/create_user', { usuario, senha }, {
+    // Fazer a requisição de login usando o token no header
+    axios.post('http://10.0.2.2:8000/api/create_user', 
+        {
+            username: usuario,
+            password: senha
+        }, 
+        {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
-        })
-        .then(response => {
-            // Se o login for bem-sucedido, navegar para a tela inicial
-            navigation.navigate('rotasTab');
-        })
-        .catch(error => {
-            // Se houver um erro no login, você pode exibir uma mensagem de erro
-            console.error('Erro de login:', error);
-        });
-    }
+        }
+    )
+    .then(response => {
+        // Se o login for bem-sucedido, navegar para a tela inicial
+        navigation.navigate('rotasTab');
+    })
+    .catch(error => {
+        // Se houver um erro no login, você pode exibir uma mensagem de erro
+        console.error('Erro de login:', error);
+    });
+}
+
 
     return(
         <View style={estilos.container}>
@@ -80,7 +87,9 @@ export const Login = () => {
             >
                 <Text style={estilos.textoBotao}>Entrar</Text>
             </TouchableOpacity>                  
-            <TouchableOpacity style={estilos.cadastro} >
+            <TouchableOpacity 
+            style={estilos.cadastro} 
+            onPress={() => navigation.navigate('cadastro')}>
                 <Text style={estilos.textoCadastro}>Cadastre-se</Text>
             </TouchableOpacity>  
         </View>
