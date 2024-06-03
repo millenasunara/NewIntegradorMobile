@@ -1,53 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../componentes/AuthContext';
 
 export const FormularioUsuario: React.FC = () => {
     const [usuario, setUsuario] = useState('');
     const [senha, setSenha] = useState('');
-    const [token, setToken] = useState('');
     const navigation = useNavigation();
-
-    useEffect(() => {
-        // Função para obter o token de autenticação
-        const fetchToken = async () => {
-            try {
-                const response = await axios.post('http://10.0.2.2:8000/api/token', {
-                    username: "joaozin_do_grau",
-                    password: 123
-                }); 
-                const token = response.data.access;
-                console.log(token)
-                setToken(token);
-            } catch (error) {
-                console.error('Erro ao obter token:', error);
-            }
-        };
-
-        // Chama a função para obter o token quando o componente é montado
-        fetchToken();
-    }, []);
+    const { token } = useAuth(); // Usando o contexto de autenticação
 
     const fazerCadastro = async () => {
         try {
-            // Verificar se o token está disponível
-            if (!token) {
-                console.error('Token não disponível');
-                return;
-            }
-
-            // Fazer a requisição de cadastro usando o token no header
-            const response = await axios.post('http://10.0.2.2:8000/api/create_user', 
+            // Fazer a requisição de cadastro
+            const response = await axios.post(
+                'http://10.0.2.2:8000/api/create_user',
                 {
                     username: usuario,
                     password: senha
-                }, 
-                {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
                 }
             );
 

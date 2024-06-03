@@ -1,100 +1,97 @@
-import React, { useState, useEffect } from 'react';
+// Login.tsx
+import React, { useState,useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../componentes/AuthContext';// ajuste o caminho conforme necessário
 
-export const Login = () => { 
+export const Login = () => {
     const [usuario, setUsuario] = useState('');
     const [senha, setSenha] = useState('');
     const navigation = useNavigation();
-    const [token, setToken] = useState('');
+    const { token, setToken } = useAuth();
+
+    const obterToken = async () => {
+        try {
+            const response = await axios.post('http://10.0.2.2:8000/api/token', {
+                username: "joaozin_do_grau",
+                password: "123"
+            });
+            const token = response.data.access;
+            console.log(token);
+            setToken(token);
+        } catch (error) {
+            console.error('Erro ao obter token:', error);
+        }
+    };
 
     useEffect(() => {
-        // Função para obter o token
-        const obterToken = async () => {
-            try {
-                
-                const response = await axios.post('http://10.0.2.2:8000/api/token', {
-                    username: "joaozin_do_grau",
-                    password: 123
-                }); 
-                const token = response.data.access;
-                console.log(token)
-                setToken(token);
-            } catch (error) {
-                console.error('Erro ao obter token:', error);
-            }
-        };
-
-        // Chamar a função para obter o token
         obterToken();
     }, []);
 
-function fazerLogin() {
-    // Verificar se o token está disponível
-    if (!token) {
-        console.error('Token não disponível');
-        return;
-    }
-
-    // Fazer a requisição de login usando o token no header
-    axios.post('http://10.0.2.2:8000/api/create_user', 
-        {
-            username: usuario,
-            password: senha
-        }, 
-        {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+    const fazerLogin = async () => {
+        if (!token) {
+            console.error('Token não disponível');
+            return;
         }
-    )
-    .then(response => {
-        // Se o login for bem-sucedido, navegar para a tela inicial
-        navigation.navigate('rotasTab');
-    })
-    .catch(error => {
-        // Se houver um erro no login, você pode exibir uma mensagem de erro
-        console.error('Erro de login:', error);
-    });
-}
 
+        try {
+            const response = await axios.post(
+                'http://10.0.2.2:8000/api/token',
+                {
+                    username: usuario,
+                    password: senha
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                }
+            );
+            const token = response.data.access;
+            console.log('Login bem-sucedido:', token);
+            setToken(token); // Atualiza o token no contexto
+            navigation.navigate('Home');
+        } catch (error) {
+            console.error('Erro de login:', error);
+        }
+    };
 
-    return(
+    return (
         <View style={estilos.container}>
-            <Image 
+            <Image
                 style={estilos.logo}
                 source={require('../../assets/logo.png')}
             />
             <TextInput
                 style={estilos.campo}
-                placeholder='Usuário' 
+                placeholder='Usuário'
                 placeholderTextColor='#e1e5f2'
                 onChangeText={setUsuario}
                 value={usuario}
             />
-            <TextInput 
+            <TextInput
                 style={estilos.campo}
                 placeholder='Senha'
                 placeholderTextColor='#e1e5f2'
                 secureTextEntry={true}
                 onChangeText={setSenha}
-                value={senha}      
-            />    
-            <TouchableOpacity 
-                style={estilos.botao} 
+                value={senha}
+            />
+            <TouchableOpacity
+                style={estilos.botao}
                 onPress={fazerLogin}
             >
                 <Text style={estilos.textoBotao}>Entrar</Text>
-            </TouchableOpacity>                  
-            <TouchableOpacity 
-            style={estilos.cadastro} 
-            onPress={() => navigation.navigate('cadastro')}>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={estilos.cadastro}
+                onPress={() => navigation.navigate('cadastro')}>
                 <Text style={estilos.textoCadastro}>Cadastre-se</Text>
-            </TouchableOpacity>  
+            </TouchableOpacity>
         </View>
     );
-}
+};
 
 const estilos = StyleSheet.create({
     container: {
@@ -115,12 +112,12 @@ const estilos = StyleSheet.create({
     },
     botao: {
         height: 50,
-        width: 300,   
-        backgroundColor: '#4f030a',       
+        width: 300,
+        backgroundColor: '#4f030a',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,    
-        marginVertical: 20,  
+        borderRadius: 5,
+        marginVertical: 20,
     },
     textoBotao: {
         color: '#fff',
