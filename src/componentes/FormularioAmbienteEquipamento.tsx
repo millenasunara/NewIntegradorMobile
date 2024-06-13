@@ -3,15 +3,15 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { Feather } from '@expo/vector-icons'
 
 interface FormularioAmbienteEquipamentoProps {
-    adicionar: (descricao: string, 
-                statusOperacional: string, 
-                instrucoesSeguranca: string, 
-                contatoResponsavel: string, 
-                latitude: string,
-                longitude: string) => void
+    adicionar: (descricao: string,
+        statusOperacional: string,
+        instrucoesSeguranca: string,
+        contatoResponsavel: string,
+        latitude: string,
+        longitude: string) => void
 }
 
-export const FormularioAmbienteEquipamento = ({adicionar}: FormularioAmbienteEquipamentoProps) => { 
+export const FormularioAmbienteEquipamento = ({ adicionar }: FormularioAmbienteEquipamentoProps) => {
 
     const [descricao, setDescricao] = useState('')
     const [statusOperacional, setStatusOperacional] = useState('')
@@ -20,76 +20,74 @@ export const FormularioAmbienteEquipamento = ({adicionar}: FormularioAmbienteEqu
     const [latitude, setLatitude] = useState('')
     const [longitude, setLongitude] = useState('')
 
-    return(
+    return (
         <View style={estilos.conteiner}>
 
             <View style={estilos.conteinerCampos}>
                 <TextInput
                     style={estilos.campo}
-                    placeholder='Descrição' 
+                    placeholder='Descrição'
                     placeholderTextColor='#01233c'
                     keyboardType='default'
                     onChangeText={setDescricao}
                     value={descricao}
                 />
-                <TextInput 
+                <TextInput
                     style={estilos.campo}
                     placeholder='Status operacional'
                     placeholderTextColor='#01233c'
                     keyboardType='default'
                     onChangeText={setStatusOperacional}
-                    value={statusOperacional}      
+                    value={statusOperacional}
                 />
-                <TextInput 
+                <TextInput
                     style={estilos.campo}
                     placeholder='Instruções de segurança'
-                    placeholderTextColor='#01233c'    
-                    keyboardType='default'           
+                    placeholderTextColor='#01233c'
+                    keyboardType='default'
                     onChangeText={setInstrucoesSeguranca}
                     value={instrucoesSeguranca}
                 />
-                <TextInput 
+                <TextInput
                     style={estilos.campo}
                     placeholder='Contato do responsável'
                     placeholderTextColor='#01233c'
-                    keyboardType='default'                
+                    keyboardType='default'
                     onChangeText={setContatoResponsavel}
                     value={contatoResponsavel}
-                />      
-                <TextInput 
+                />
+                <TextInput
                     style={estilos.campo}
                     placeholder='Latitude'
                     placeholderTextColor='#01233c'
-                    keyboardType='default'                
+                    keyboardType='default'
                     onChangeText={setLatitude}
                     value={latitude}
-                />           
-                <TextInput 
+                />
+                <TextInput
                     style={estilos.campo}
                     placeholder='Longitude'
                     placeholderTextColor='#01233c'
-                    keyboardType='default'                
+                    keyboardType='default'
                     onChangeText={setLongitude}
                     value={longitude}
-                />                                 
+                />
             </View>
 
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={estilos.botao}
-                onPress={ () => adicionar(descricao, 
-                                          statusOperacional, 
-                                          instrucoesSeguranca, 
-                                          contatoResponsavel, 
-                                          latitude,
-                                          longitude) }
+                onPress={() =>
+                    adicionar(
+                        descricao,
+                        statusOperacional,
+                        instrucoesSeguranca,
+                        contatoResponsavel,
+                        latitude,
+                        longitude
+                    )
+                }
             >
-                <Text>
-                    <Feather 
-                        name="user-plus" 
-                        size={24} 
-                        color='#dee2e6' 
-                    />   
-                </Text>
+                <Feather name="user-plus" size={24} color='#dee2e6' />
             </TouchableOpacity>
         </View>
     )
@@ -125,4 +123,4 @@ const estilos = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 5,
     },
-  });
+});

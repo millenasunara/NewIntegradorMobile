@@ -10,6 +10,7 @@ export const Cadastro = () => {
             <Cabecalho titulo="Cadastro" />
             <View style={estilos.conteiner}>
                 <FormularioUsuario />
+                
             </View>
         </>
     );

@@ -1,0 +1,60 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--branco);
+    justify-content: space-around;
+    align-items: center;
+    width: 15vw;
+    height: 40vh;
+    border-radius: 20px;
+}
+
+.general_container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url('../../assets/background.jpg');
+    background-size: cover;
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formulario input {
+    border: 1px solid var(--preto);
+    padding: 10px;
+    width:100%;
+}
+
+.campo {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 6px;
+}
+
+.botao {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: var(--preto);
+    color: var(--branco);
+    border: none;
+    cursor: pointer;
+}
+
+.container_cadastro{
+    text-align: center;
+}
+
+.container_cadastro p {
+    font-size: 18px;
+}
+
+h1 {
+    padding-top: 2rem;
+    font-size: 45px;
+}
+

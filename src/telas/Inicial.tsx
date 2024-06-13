@@ -1,10 +1,10 @@
+import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, View, Image } from 'react-native';
-import { useEffect, useState, useRef } from 'react';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { useAuth } from '../componentes/AuthContext';
 import {
   requestForegroundPermissionsAsync,
   getCurrentPositionAsync,
-  LocationObject,
   watchPositionAsync,
   LocationAccuracy
 } from 'expo-location';
@@ -27,6 +27,7 @@ export const Inicial = () => {
   const [location, setLocation] = useState<LocationObject | null>(null);
   const [sensors, setSensors] = useState<Sensor[]>([]);
   const mapRef = useRef<MapView>(null);
+  const { token } = useAuth();
 
   async function requestLocationPermissions() {
     const { granted } = await requestForegroundPermissionsAsync();
@@ -43,7 +44,11 @@ export const Inicial = () => {
     // Função para buscar os sensores
     async function fetchSensors() {
       try {
-        const response = await fetch('http://10.0.2.2:8000/api/sensores/'); 
+        const response = await fetch('http://10.0.2.2:8000/api/sensores/', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         const data: Sensor[] = await response.json();
         setSensors(data);
       } catch (error) {
@@ -67,6 +72,7 @@ export const Inicial = () => {
           pitch: 70,
           center: response.coords
         });
+        console.log("LOCALIZAÇÃO ATUAL =>", response.coords); // Adicionando log das coordenadas
       }
     );
   }, []);
@@ -75,22 +81,26 @@ export const Inicial = () => {
     <View style={estilos.conteiner}>
       {location && (
         <MapView
+          provider={PROVIDER_GOOGLE}
           ref={mapRef}
           style={estilos.map}
           initialRegion={{
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005
+            latitude: -22.903920, // Latitude do Senai Roberto Mange
+            longitude: -47.062740, // Longitude do Senai Roberto Mange
+            latitudeDelta: 0.02, // Aumentando os intervalos delta
+            longitudeDelta: 0.02
           }}
         >
           <Marker
             coordinate={{
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude
+              latitude: -22.903920, // Latitude do Senai Roberto Mange
+              longitude: -47.062740 // Longitude do Senai Roberto Mange
             }}
+            title="Senai Roberto Mange"
+            pinColor="red"
           />
-          {sensors.map(sensor => (
+
+          {sensors && sensors.map(sensor => (
             <Marker
               key={sensor.id}
               coordinate={{
@@ -112,20 +122,15 @@ export const Inicial = () => {
       )}
     </View>
   );
+
 }
 
 const estilos = StyleSheet.create({
   conteiner: {
     flex: 1
   },
-  fundo: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
   map: {
-    flex: 1,
+    height: '100%',
     width: '100%'
   },
   marcadorContainer: {

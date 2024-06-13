@@ -1,9 +1,8 @@
-// Login.tsx
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
-import { useAuth } from '../componentes/AuthContext';// ajuste o caminho conforme necessário
+import { useAuth } from '../componentes/AuthContext'; // ajuste o caminho conforme necessário
 
 export const Login = () => {
     const [usuario, setUsuario] = useState('');
@@ -13,15 +12,15 @@ export const Login = () => {
 
     const obterToken = async () => {
         try {
-            const response = await axios.post('http://10.0.2.2:8000/api/token', {
-                username: "joaozin_do_grau",
-                password: "123"
+            const response = await axios.post('http://10.0.2.2:8000/api/token/', {
+                username: "smartuser",
+                password: "senai"
             });
             const token = response.data.access;
-            console.log(token);
+            console.log('Token obtido:', token);
             setToken(token);
         } catch (error) {
-            console.error('Erro ao obter token:', error);
+            console.error('Erro ao obter token:', error.response ? error.response.data : error.message);
         }
     };
 
@@ -37,7 +36,7 @@ export const Login = () => {
 
         try {
             const response = await axios.post(
-                'http://10.0.2.2:8000/api/token',
+                'http://10.0.2.2:8000/api/token/',
                 {
                     username: usuario,
                     password: senha
@@ -51,9 +50,9 @@ export const Login = () => {
             const token = response.data.access;
             console.log('Login bem-sucedido:', token);
             setToken(token); // Atualiza o token no contexto
-            navigation.navigate('Home');
+            navigation.navigate('rotasTab');
         } catch (error) {
-            console.error('Erro de login:', error);
+            console.error('Erro de login:', error.response ? error.response.data : error.message);
         }
     };
 

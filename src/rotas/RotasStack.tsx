@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { Login } from '../telas/Login'
 import { RotasTab } from './RotasTab'
 import { Cadastro } from '../telas/Cadastro'
+import { Inicial} from '../telas/Inicial'
 import { AuthProvider } from '../componentes/AuthContext'
 
 const { Navigator, Screen } = createNativeStackNavigator()
@@ -27,6 +28,7 @@ export function RotasStack() {
                         name='cadastro'
                         component={Cadastro}
                     />
+                    
 
                 </Navigator>
 
@@ -34,3 +36,4 @@ export function RotasStack() {
         </AuthProvider>
     )
 }
+// Teve o acréscimo da Screen Inicial

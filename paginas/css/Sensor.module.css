@@ -1,0 +1,42 @@
+/* .container {
+    display: flex;
+    height: 450px;
+    justify-content: center;
+    align-items: center;
+    
+} */
+
+.text {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.containerTabela{
+    display: flex;
+    justify-content: center;
+}
+
+table {
+    padding: 10px;
+    font-size: 16px;
+    border-collapse: collapse; /* Colapsa as bordas da tabela */
+    width: 60%;
+    align-items: center;
+    flex-direction: column;
+}
+
+th, td {
+    border: 1px solid black; /* Define as bordas para células */
+    padding: 8px; /* Adiciona padding às células */
+    text-align: center; 
+}
+
+
+tbody tr:nth-child(even) {
+    background-color: var(--cinza-claro); /* Alterna a cor de fundo para linhas pares */
+}
+
+.pencil{
+    color: var(--preto)
+}

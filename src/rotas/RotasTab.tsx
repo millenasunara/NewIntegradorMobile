@@ -52,6 +52,7 @@ export function RotasTab(){
                     )
                 }}                
             />
+            
 
         </Navigator>
     )
